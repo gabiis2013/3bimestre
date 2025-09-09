@@ -1,1 +1,4 @@
 # 3bimestre
+
+
+eu consegui
