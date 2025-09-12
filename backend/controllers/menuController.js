@@ -7,15 +7,15 @@ exports.abrirMenu = (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/menu.html'));
 };
 
+exports.inicio = (req, res) => {
+    res.send('Rota /inicio funcionando');
+};
 
 exports.logout = (req, res) => {
-    // Implementação da rota logout
-    res.send('Rota logout');
+  // Implementação da rota logout
+  res.send("Rota logout");
 };
-// app.get('/inicio', (req, res) => {
-//     console.log('rota menu/inicio - Acessando index.html');
-//     res.sendFile(path.join(__dirname, '../index.html'));
-// });
+
 
 // let mnemonicoProfessorGlobal = null;
 // // Rota de menu (protege via cookie) - checkAuth 
