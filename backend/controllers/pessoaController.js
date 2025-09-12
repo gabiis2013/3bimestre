@@ -1,5 +1,5 @@
 //import { query } from '../database.js';
-const { query } = require('../database');
+const db = require('../database');
 // Funções do controller
 
 const path = require('path');
@@ -11,7 +11,7 @@ exports.abrirCrudPessoa = (req, res) => {
 
 exports.listarPessoas = async (req, res) => {
   try {
-    const result = await query('SELECT * FROM pessoa ORDER BY id_pessoa');
+    const result = await db.query('SELECT * FROM pessoa ORDER BY id_pessoa');
     // console.log('Resultado do SELECT:', result.rows);//verifica se está retornando algo
     res.json(result.rows);
   } catch (error) {
