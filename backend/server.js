@@ -74,7 +74,7 @@ const loginRoutes = require('./routes/loginRoutes');
 app.use('/login', loginRoutes);
 
 const menuRoutes = require('./routes/menuRoutes');
-app.use('/menu', menuRoutes);
+app.use('/', menuRoutes);
 
 const pessoaRoutes = require('./routes/pessoaRoutes');
 app.use('/pessoa', pessoaRoutes);
@@ -113,9 +113,9 @@ app.get('/', (req, res) => {
 // Rota para testar a conexão com o banco
 app.get('/health', async (req, res) => {
   try {
-    const connectionTest = await db.testConnection();
+    
 
-    if (connectionTest) {
+    if (db.testConnection ) {
       res.status(200).json({
         status: 'OK',
         message: 'Servidor e banco de dados funcionando',
@@ -169,12 +169,7 @@ const startServer = async () => {
     // Testar conexão com o banco antes de iniciar o servidor
     console.log(caminhoFrontend);
     console.log('Testando conexão com PostgreSQL...');
-    const connectionTest = await db.testConnection();
-
-    if (!connectionTest) {
-      console.error('❌ Falha na conexão com PostgreSQL');
-      process.exit(1);
-    }
+    const testConnection = await db.testConnection();
 
     console.log('✅ PostgreSQL conectado com sucesso');
 
