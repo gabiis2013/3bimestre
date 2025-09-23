@@ -15,7 +15,7 @@
         <h2>Rotas disponíveis</h2>
         <ul>
             <li><a href="http://localhost:3001/" target="_blank">Home</a> - Rota raiz</li>
-            <li><a href="http://localhost:3001/pessoas" target="_blank">Listar todas as pessoas</a> - GET /pessoas</li>
+            <li><a href="http://localhost:3001/pessoa" target="_blank">Listar todas as pessoas</a> - GET /pessoas</li>
         </ul>
     </div>
 
@@ -39,7 +39,7 @@
 
             const resultDiv = document.getElementById('result');
             resultDiv.classList.add('hidden');
-            let aRota = `http://localhost:3001/pessoas/${pessoaId}`;
+            let aRota = `http://localhost:3001/pessoa/${pessoaId}`;
             console.log(aRota);
             fetch(aRota)
                 .then(response => {

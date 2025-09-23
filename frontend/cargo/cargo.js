@@ -5,7 +5,7 @@ let currentPersonId = null;
 let operacao = null;
 
 // Elementos do DOM
-const form = document.getElementById('pessoaForm');
+const form = document.getElementById('cargoForm');
 const searchId = document.getElementById('searchId');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnIncluir = document.getElementById('btnIncluir');
@@ -13,19 +13,19 @@ const btnAlterar = document.getElementById('btnAlterar');
 const btnExcluir = document.getElementById('btnExcluir');
 const btnCancelar = document.getElementById('btnCancelar');
 const btnSalvar = document.getElementById('btnSalvar');
-const pessoasTableBody = document.getElementById('pessoasTableBody');
+const cargosTableBody = document.getElementById('cargosTableBody');
 const messageContainer = document.getElementById('messageContainer');
 
-// Carregar lista de pessoas ao inicializar
+// Carregar lista de cargos ao inicializar
 document.addEventListener('DOMContentLoaded', () => {
-    carregarPessoas();
+    carregarCargos();
 });
 
 // Event Listeners
-btnBuscar.addEventListener('click', buscarPessoa);
-btnIncluir.addEventListener('click', incluirPessoa);
-btnAlterar.addEventListener('click', alterarPessoa);
-btnExcluir.addEventListener('click', excluirPessoa);
+btnBuscar.addEventListener('click', buscarCargo);
+btnIncluir.addEventListener('click', incluirCargo);
+btnAlterar.addEventListener('click', alterarCargo);
+btnExcluir.addEventListener('click', excluirCargo);
 btnCancelar.addEventListener('click', cancelarOperacao);
 btnSalvar.addEventListener('click', salvarOperacao);
 
@@ -41,9 +41,8 @@ function mostrarMensagem(texto, tipo = 'info') {
 }
 
 function bloquearCampos(bloquearPrimeiro) {
-    const inputs = document.querySelectorAll('input, select,checkbox'); // Seleciona todos os inputs e selects do DOCUMENTO
+    const inputs = form.querySelectorAll('input, select');
     inputs.forEach((input, index) => {
-        // console.log(`Input ${index}: ${input.name}, disabled: ${input.disabled}`);
         if (index === 0) {
             // Primeiro elemento - bloqueia se bloquearPrimeiro for true, libera se for false
             input.disabled = bloquearPrimeiro;
@@ -57,10 +56,6 @@ function bloquearCampos(bloquearPrimeiro) {
 // Função para limpar formulário
 function limparFormulario() {
     form.reset();
-    document.getElementById('mnemonicoProfessor').value = '';
-    document.getElementById('departamentoProfessor').value = '';
-    document.getElementById('checkboxAvaliador').checked = false;    
-    document.getElementById('checkboxAvaliado').checked = false;
 }
 
 
@@ -86,89 +81,78 @@ function converterDataParaISO(dataString) {
     return new Date(dataString).toISOString();
 }
 
-// Função para buscar pessoa por ID
-async function buscarPessoa() {
+// Função para buscar cargo por ID
+async function buscarCargo() {
     const id = searchId.value.trim();
     if (!id) {
         mostrarMensagem('Digite um ID para buscar', 'warning');
         return;
     }
-
     bloquearCampos(false);
+    //focus no campo searchId
     searchId.focus();
     try {
-        const response = await fetch(`${API_BASE_URL}/pessoa/${id}`);
+        const response = await fetch(`${API_BASE_URL}/cargo/${id}`);
 
         if (response.ok) {
-            const pessoa = await response.json();
-            preencherFormulario(pessoa);
+            const cargo = await response.json();
+            preencherFormulario(cargo);
 
             mostrarBotoes(true, false, true, true, false, false);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-            mostrarMensagem('Pessoa encontrada!', 'success');
+            mostrarMensagem('Cargo encontrado!', 'success');
 
         } else if (response.status === 404) {
             limparFormulario();
             searchId.value = id;
             mostrarBotoes(true, true, false, false, false, false); //mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-            mostrarMensagem('Pessoa não encontrada. Você pode incluir uma nova pessoa.', 'info');
+            mostrarMensagem('Cargo não encontrada. Você pode incluir um novo cargo.', 'info');
             bloquearCampos(false);//bloqueia a pk e libera os demais campos
             //enviar o foco para o campo de nome
         } else {
-            throw new Error('Erro ao buscar pessoa');
+            throw new Error('Erro ao buscar cargo');
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao buscar pessoa', 'error');
+        mostrarMensagem('Erro ao buscar cargo', 'error');
     }
 }
 
-    // Função para preencher formulário com dados da pessoa
-function preencherFormulario(pessoa) {
-    currentPersonId = pessoa.cpfPessoa;
-    searchId.value = pessoa.cpfPessoa;
-    document.getElementById('nomePessoa').value = pessoa.nomePessoa || '';
-    document.getElementById('emailPessoa').value = pessoa.emailPessoa || '';
-    document.getElementById('senhaPessoa').value = pessoa.senhaPessoa || '';
-
-    // Formatação da data para input type="date"
-    if (dataNascimentoPessoa) {
-        const data = new Date(dataNascimentoPessoa);
-        const dataFormatada = data.toISOString().split('T')[0];
-        document.getElementById('data_nascimento').value = dataFormatada;
-    } else {
-        document.getElementById('data_nascimento').value = '';
-    }
+// Função para preencher formulário com dados da cargo
+function preencherFormulario(cargo) {
+    currentPersonId = cargo.idcargo;
+    searchId.value = cargo.idcargo;
+    document.getElementById('nomecargo').value = cargo.nomecargo || '';  
 }
 
 
-// Função para incluir pessoa
-async function incluirPessoa() {
+// Função para incluir cargo
+async function incluirCargo() {
 
     mostrarMensagem('Digite os dados!', 'success');
     currentPersonId = searchId.value;
-    // console.log('Incluir nova pessoa - currentPersonId: ' + currentPersonId);
+    // console.log('Incluir nova cargo - currentPersonId: ' + currentPersonId);
     limparFormulario();
     searchId.value = currentPersonId;
     bloquearCampos(true);
 
     mostrarBotoes(false, false, false, false, true, true); // mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('nomePessoa').focus();
+    document.getElementById('nomecargo').focus();
     operacao = 'incluir';
-    // console.log('fim nova pessoa - currentPersonId: ' + currentPersonId);
+    // console.log('fim nova cargo - currentPersonId: ' + currentPersonId);
 }
 
-// Função para alterar pessoa
-async function alterarPessoa() {
+// Função para alterar cargo
+async function alterarCargo() {
     mostrarMensagem('Digite os dados!', 'success');
     bloquearCampos(true);
     mostrarBotoes(false, false, false, false, true, true);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('nomePessoa').focus();
+    document.getElementById('nomecargo').focus();
     operacao = 'alterar';
 }
 
-// Função para excluir pessoa
-async function excluirPessoa() {
-    mostrarMensagem('Excluindo pessoa...', 'info');
+// Função para excluir cargo
+async function excluirCargo() {
+    mostrarMensagem('Excluindo cargo...', 'info');
     currentPersonId = searchId.value;
     //bloquear searchId
     searchId.disabled = true;
@@ -181,58 +165,59 @@ async function salvarOperacao() {
     console.log('Operação:', operacao + ' - currentPersonId: ' + currentPersonId + ' - searchId: ' + searchId.value);
 
     const formData = new FormData(form);
-    const pessoa = {
-        id_pessoa: searchId.value,
-        nomePessoa: formData.get('nomePessoa'),            
+    const cargo = {
+        idcargo: searchId.value,
+        nomecargo: formData.get('nomecargo'),            
     };
     let response = null;
     try {
         if (operacao === 'incluir') {
-            response = await fetch(`${API_BASE_URL}/pessoa`, {
+            response = await fetch(`${API_BASE_URL}/cargo`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(pessoa)
+                body: JSON.stringify(cargo)
             });
         } else if (operacao === 'alterar') {
-            response = await fetch(`${API_BASE_URL}/pessoa/${currentPersonId}`, {
+            response = await fetch(`${API_BASE_URL}/cargo/${currentPersonId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(pessoa)
+                body: JSON.stringify(cargo)
             });
         } else if (operacao === 'excluir') {
-            // console.log('Excluindo pessoa com ID:', currentPersonId);
-            response = await fetch(`${API_BASE_URL}/pessoa/${currentPersonId}`, {
+            // console.log('Excluindo cargo com ID:', currentPersonId);
+            response = await fetch(`${API_BASE_URL}/cargo/${currentPersonId}`, {
                 method: 'DELETE'
             });
-            console.log('Pessoa excluído' + response.status);
+            console.log('Cargo excluído' + response.status);
         }
         if (response.ok && (operacao === 'incluir' || operacao === 'alterar')) {
-            const novaPessoa = await response.json();
+            const novoCargo = await response.json();
             mostrarMensagem('Operação ' + operacao + ' realizada com sucesso!', 'success');
             limparFormulario();
-            carregarPessoas();
+            carregarCargos();
 
         } else if (operacao !== 'excluir') {
             const error = await response.json();
-            mostrarMensagem(error.error || 'Erro ao incluir pessoa', 'error');
+            mostrarMensagem(error.error || 'Erro ao incluir cargo', 'error');
         } else {
-            mostrarMensagem('Pessoa excluída com sucesso!', 'success');
+            mostrarMensagem('Cargo excluído com sucesso!', 'success');
             limparFormulario();
-            carregarPessoas();
+            carregarCargos();
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao incluir ou alterar a pessoa', 'error');
+        mostrarMensagem('Erro ao incluir ou alterar o cargo', 'error');
     }
 
     mostrarBotoes(true, false, false, false, false, false);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
     bloquearCampos(false);//libera pk e bloqueia os demais campos
     document.getElementById('searchId').focus();
 }
+
 // Função para cancelar operação
 function cancelarOperacao() {
     limparFormulario();
@@ -242,45 +227,44 @@ function cancelarOperacao() {
     mostrarMensagem('Operação cancelada', 'info');
 }
 
-// Função para carregar lista de pessoas
-async function carregarPessoas() {
+// Função para carregar lista de cargos
+async function carregarCargos() {
     try {
-        const response = await fetch(`${API_BASE_URL}/pessoa`);
-
+        const response = await fetch(`${API_BASE_URL}/cargo`);
+    //    debugger
         if (response.ok) {
-            const pessoas = await response.json();
-            renderizarTabelaPessoas(pessoas);
+            const cargos = await response.json();
+            renderizarTabelaCargos(cargos);
         } else {
-            throw new Error('Erro ao carregar pessoas');
+            throw new Error('Erro ao carregar cargos');
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao carregar lista de pessoas', 'error');
+        mostrarMensagem('Erro ao carregar lista de cargos', 'error');
     }
 }
 
-// Função para renderizar tabela de pessoas
-function renderizarTabelaPessoas(pessoas) {
-    pessoasTableBody.innerHTML = '';
+// Função para renderizar tabela de cargos
+function renderizarTabelaCargos(cargos) {
+    cargosTableBody.innerHTML = '';
 
-    pessoas.forEach(pessoa => {
+    cargos.forEach(cargo => {
         const row = document.createElement('tr');
         row.innerHTML = `
                     <td>
-                        <button class="btn-id" onclick="selecionarPessoa(${pessoa.cpfPessoa})">
-                            ${pessoa.cpfPessoa}
+                        <button class="btn-id" onclick="selecionarCargo(${cargo.idcargo})">
+                            ${cargo.idcargo}
                         </button>
                     </td>
-                    <td>${pessoa.nomePessoa}</td>
-                    <td>${pessoa.emailPessoa}</td>
-                    <td>${formatarData(dataNascimentoPessoa)}</td>                 
+                    <td>${cargo.nomecargo}</td>
+                                 
                 `;
-        pessoasTableBody.appendChild(row);
+        cargosTableBody.appendChild(row);
     });
 }
 
-// Função para selecionar pessoa da tabela
-async function selecionarPessoa(id) {
+// Função para selecionar cargo da tabela
+async function selecionarCargo(id) {
     searchId.value = id;
-    await buscarPessoa();
+    await buscarCargo();
 }

@@ -70,33 +70,36 @@ app.use((err, req, res, next) => {
 // só mexa nessa parte
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Importando as rotas
-const loginRoutes = require('./routes/loginRoutes');
-app.use('/login', loginRoutes);
+//const loginRoutes = require('./routes/loginRoutes');
+//app.use('/login', loginRoutes);
 
 const menuRoutes = require('./routes/menuRoutes');
 app.use('/', menuRoutes);
 
-const pessoaRoutes = require('./routes/pessoaRoutes');
-app.use('/pessoa', pessoaRoutes);
+//const pessoaRoutes = require('./routes/pessoaRoutes');
+//app.use('/pessoa', pessoaRoutes);
 
-const questaoRoutes = require('./routes/questaoRoutes');
-app.use('/questao', questaoRoutes);
+//const questaoRoutes = require('./routes/questaoRoutes');
+//app.use('/questao', questaoRoutes);
 
-const professorRoutes = require('./routes/professorRoutes');
-app.use('/professor', professorRoutes);
+//const professorRoutes = require('./routes/professorRoutes');
+//app.use('/professor', professorRoutes);
 
-const avaliadorRoutes = require('./routes/avaliadorRoutes');
-app.use('/avaliador', avaliadorRoutes);
+//const avaliadorRoutes = require('./routes/avaliadorRoutes');
+//app.use('/avaliador', avaliadorRoutes);
 
-const avaliadoRoutes = require('./routes/avaliadoRoutes');
-app.use('/avaliado', avaliadoRoutes);
+//const avaliadoRoutes = require('./routes/avaliadoRoutes');
+//app.use('/avaliado', avaliadoRoutes);
 
 
-const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
-app.use('/avaliacao', avaliacaoRoutes);
+//const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
+//app.use('/avaliacao', avaliacaoRoutes);
 
-const avaliacaoHasQuestaoRoutes = require('./routes/avaliacaoHasQuestaoRoutes');
-app.use('/avaliacaoHasQuestao', avaliacaoHasQuestaoRoutes);
+//const avaliacaoHasQuestaoRoutes = require('./routes/avaliacaoHasQuestaoRoutes');
+//app.use('/avaliacaoHasQuestao', avaliacaoHasQuestaoRoutes);
+
+const cargoRoutes = require('./routes/cargoRoutes');
+app.use('/cargo', cargoRoutes);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,7 +156,7 @@ app.use((err, req, res, next) => {
 });
 
 // Middleware para rotas não encontradas (404)
-app.use('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({
     error: 'Rota não encontrada',
     message: `A rota ${req.originalUrl} não existe`,
