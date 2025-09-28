@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pessoaController = require('../controllers/pessoaController');
+const pessoaController = require('./../controllers/pessoaController');
 
 // CRUD de Pessoas
 

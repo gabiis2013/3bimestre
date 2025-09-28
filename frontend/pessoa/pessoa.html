@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUD - Pessoa</title>
-    <link rel="stylesheet" href="/pessoa/pessoa.css">
+    <link rel="stylesheet" href="pessoa.css">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
 
             <form id="pessoaForm">
                 <div class="search-container">
-                    <label for="searchId">Buscar por ID:</label>
+                    <label for="searchId">Buscar por CPF:</label>
                     <div class="search-input-group">
                         <input type="number" id="searchId" placeholder="Digite o ID para buscar">
                         <button type="button" id="btnBuscar">🔍 Buscar</button>
@@ -37,39 +37,25 @@
                     <legend>Dados da Pessoa</legend>
 
                     <div class="form-group">
-                        <label for="nomePessoa">Nome:</label>
-                        <input type="text" id="nomePessoa" name="nomePessoa" required>
+                        <label for="nomepessoa">Nome da Pessoa:</label>
+                        <input type="text" id="nomepessoa" name="nomepessoa" required>
                     </div>
-
-                    <div class="form-group">
-                        <label for="emailPessoa">Email:</label>
-                        <input type="email" id="emailPessoa" name="emailPessoa" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="senhaPessoa">Senha:</label>
-                        <input type="password" id="senhaPessoa" name="senhaPessoa" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dataNascimentoPessoa">Data de Nascimento:</label>
-                        <input type="date" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
-                    </div>
-                </fieldset>
+-                </fieldset>
             </form>
-           
         </section>
 
         <section class="list-section">
             <div class="table-container">
                 <table id="pessoasTable">
                     <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Data Nascimento</th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Data Nascimento</th>
+                            </tr>
+                        </thead>
                     </thead>
                     <tbody id="pessoasTableBody">
                         <!-- Dados serão carregados dinamicamente -->
@@ -85,7 +71,7 @@
 
     <div id="messageContainer" class="message-container"></div>
 
-    <script src="/pessoa/pessoa.js" defer></script>
+    <script src="pessoa.js" defer></script>
 
 </body>
 

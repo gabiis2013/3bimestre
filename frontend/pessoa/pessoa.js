@@ -41,9 +41,8 @@ function mostrarMensagem(texto, tipo = 'info') {
 }
 
 function bloquearCampos(bloquearPrimeiro) {
-    const inputs = document.querySelectorAll('input, select,checkbox'); // Seleciona todos os inputs e selects do DOCUMENTO
+    const inputs = form.querySelectorAll('input, select');
     inputs.forEach((input, index) => {
-        // console.log(`Input ${index}: ${input.name}, disabled: ${input.disabled}`);
         if (index === 0) {
             // Primeiro elemento - bloqueia se bloquearPrimeiro for true, libera se for false
             input.disabled = bloquearPrimeiro;
@@ -57,10 +56,6 @@ function bloquearCampos(bloquearPrimeiro) {
 // Função para limpar formulário
 function limparFormulario() {
     form.reset();
-    document.getElementById('mnemonicoProfessor').value = '';
-    document.getElementById('departamentoProfessor').value = '';
-    document.getElementById('checkboxAvaliador').checked = false;    
-    document.getElementById('checkboxAvaliado').checked = false;
 }
 
 
@@ -93,8 +88,8 @@ async function buscarPessoa() {
         mostrarMensagem('Digite um ID para buscar', 'warning');
         return;
     }
-
     bloquearCampos(false);
+    //focus no campo searchId
     searchId.focus();
     try {
         const response = await fetch(`${API_BASE_URL}/pessoa/${id}`);
@@ -122,21 +117,21 @@ async function buscarPessoa() {
     }
 }
 
-    // Função para preencher formulário com dados da pessoa
+// Função para preencher formulário com dados da pessoa
 function preencherFormulario(pessoa) {
-    currentPersonId = pessoa.cpfPessoa;
-    searchId.value = pessoa.cpfPessoa;
-    document.getElementById('nomePessoa').value = pessoa.nomePessoa || '';
-    document.getElementById('emailPessoa').value = pessoa.emailPessoa || '';
-    document.getElementById('senhaPessoa').value = pessoa.senhaPessoa || '';
+    currentPersonId = pessoa.cpfpessoa;
+    searchId.value = pessoa.cpfpessoa;
+    document.getElementById('nomepessoa').value = pessoa.nomepessoa || '';
+    document.getElementById('emailpessoa').value = pessoa.emailpessoa || '';
+    document.getElementById('senhapessoa').value = pessoa.senhapessoa || '';
 
     // Formatação da data para input type="date"
-    if (dataNascimentoPessoa) {
-        const data = new Date(dataNascimentoPessoa);
+    if (pessoa.datanascimentopessoa) {
+        const data = new Date(pessoa.datanascimentopessoa);
         const dataFormatada = data.toISOString().split('T')[0];
-        document.getElementById('data_nascimento').value = dataFormatada;
+        document.getElementById('datanascimentopessoa').value = dataFormatada;
     } else {
-        document.getElementById('data_nascimento').value = '';
+        document.getElementById('datanascimentopessoa').value = '';
     }
 }
 
@@ -152,7 +147,7 @@ async function incluirPessoa() {
     bloquearCampos(true);
 
     mostrarBotoes(false, false, false, false, true, true); // mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('nomePessoa').focus();
+    document.getElementById('nomepessoa').focus();
     operacao = 'incluir';
     // console.log('fim nova pessoa - currentPersonId: ' + currentPersonId);
 }
@@ -162,7 +157,7 @@ async function alterarPessoa() {
     mostrarMensagem('Digite os dados!', 'success');
     bloquearCampos(true);
     mostrarBotoes(false, false, false, false, true, true);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('nomePessoa').focus();
+    document.getElementById('nomepessoa').focus();
     operacao = 'alterar';
 }
 
@@ -182,8 +177,8 @@ async function salvarOperacao() {
 
     const formData = new FormData(form);
     const pessoa = {
-        id_pessoa: searchId.value,
-        nomePessoa: formData.get('nomePessoa'),            
+        cpfpessoa: searchId.value,
+        nomepessoa: formData.get('nomepessoa'),            
     };
     let response = null;
     try {
@@ -204,11 +199,11 @@ async function salvarOperacao() {
                 body: JSON.stringify(pessoa)
             });
         } else if (operacao === 'excluir') {
-            // console.log('Excluindo pessoa com ID:', currentPersonId);
+            // console.log('Excluindo pessoa com CPF:', currentPersonId);
             response = await fetch(`${API_BASE_URL}/pessoa/${currentPersonId}`, {
                 method: 'DELETE'
             });
-            console.log('Pessoa excluído' + response.status);
+            console.log('Pessoa excluída' + response.status);
         }
         if (response.ok && (operacao === 'incluir' || operacao === 'alterar')) {
             const novaPessoa = await response.json();
@@ -233,6 +228,7 @@ async function salvarOperacao() {
     bloquearCampos(false);//libera pk e bloqueia os demais campos
     document.getElementById('searchId').focus();
 }
+
 // Função para cancelar operação
 function cancelarOperacao() {
     limparFormulario();
@@ -246,7 +242,7 @@ function cancelarOperacao() {
 async function carregarPessoas() {
     try {
         const response = await fetch(`${API_BASE_URL}/pessoa`);
-
+    //    debugger
         if (response.ok) {
             const pessoas = await response.json();
             renderizarTabelaPessoas(pessoas);
@@ -267,20 +263,20 @@ function renderizarTabelaPessoas(pessoas) {
         const row = document.createElement('tr');
         row.innerHTML = `
                     <td>
-                        <button class="btn-id" onclick="selecionarPessoa(${pessoa.cpfPessoa})">
-                            ${pessoa.cpfPessoa}
+                        <button class="btn-id" onclick="selecionarPessoa(${pessoa.cpfpessoa})">
+                            ${pessoa.cpfpessoa}
                         </button>
                     </td>
-                    <td>${pessoa.nomePessoa}</td>
-                    <td>${pessoa.emailPessoa}</td>
-                    <td>${formatarData(dataNascimentoPessoa)}</td>                 
+                    <td>${pessoa.nomepessoa}</td>
+                    <td>${pessoa.emailpessoa}</td>
+                    <td>${formatarData(pessoa.datanascimentopessoa)}</td>                 
                 `;
         pessoasTableBody.appendChild(row);
     });
 }
 
 // Função para selecionar pessoa da tabela
-async function selecionarPessoa(id) {
-    searchId.value = id;
+async function selecionarPessoa(cpf) {
+    searchId.value = cpf;
     await buscarPessoa();
 }
