@@ -10,9 +10,11 @@ CREATE TABLE Cargo (
 );
 
 CREATE TABLE Pessoa (
-    cpfPessoa VARCHAR(20) PRIMARY KEY,
+    cpfPessoa CHAR(11) PRIMARY KEY,
     nomePessoa VARCHAR(60) NOT NULL,
-    dataNascimentoPessoa DATE NOT NULL
+    dataNascimentoPessoa DATE NOT NULL,
+    emailPessoa VARCHAR(100) UNIQUE NOT NULL,
+    senhaPessoa VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Cliente (
@@ -82,17 +84,18 @@ INSERT INTO Cargo (nomeCargo) VALUES
 ('Auxiliar'),('Estoquista'),('Entregador'),('Assistente'),('Diretor');
 
 -- Pessoa
-INSERT INTO Pessoa (cpfPessoa, nomePessoa, dataNascimentoPessoa) VALUES
-('11111111111','João Silva','1990-01-01'),
-('22222222222','Maria Souza','1985-05-10'),
-('33333333333','Carlos Pereira','1992-03-15'),
-('44444444444','Ana Lima','1998-07-20'),
-('55555555555','Lucas Rocha','1980-09-25'),
-('66666666666','Fernanda Alves','1995-11-30'),
-('77777777777','Rafael Santos','1987-12-12'),
-('88888888888','Juliana Costa','1993-02-22'),
-('99999999999','Pedro Martins','1999-06-05'),
-('10101010101','Clara Mendes','2000-08-18');
+INSERT INTO Pessoa (cpfPessoa, nomePessoa, dataNascimentoPessoa, emailPessoa, senhaPessoa) VALUES
+('11111111111','João Silva','1990-01-01','joao.silva@email.com','senha123'),
+('22222222222','Maria Souza','1985-05-10','maria.souza@email.com','senha123'),
+('33333333333','Carlos Pereira','1992-03-15','carlos.pereira@email.com','senha123'),
+('44444444444','Ana Lima','1998-07-20','ana.lima@email.com','senha123'),
+('55555555555','Lucas Rocha','1980-09-25','lucas.rocha@email.com','senha123'),
+('66666666666','Fernanda Alves','1995-11-30','fernanda.alves@email.com','senha123'),
+('77777777777','Rafael Santos','1987-12-12','rafael.santos@email.com','senha123'),
+('88888888888','Juliana Costa','1993-02-22','juliana.costa@email.com','senha123'),
+('99999999999','Pedro Martins','1999-06-05','pedro.martins@email.com','senha123'),
+('10101010101','Clara Mendes','2000-08-18','clara.mendes@email.com','senha123');
+
 
 -- Cliente
 INSERT INTO Cliente VALUES

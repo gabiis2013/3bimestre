@@ -80,34 +80,36 @@ function converterDataParaISO(dataString) {
     if (!dataString) return null;
     return new Date(dataString).toISOString();
 }
-
-// Função para buscar pessoa por ID
+// Buscar pessoa por CPF
 async function buscarPessoa() {
-    const id = searchId.value.trim();
-    if (!id) {
-        mostrarMensagem('Digite um ID para buscar', 'warning');
+    const cpf = searchId.value.trim();
+    if (!cpf) {
+        mostrarMensagem('Digite um CPF para buscar', 'warning');
         return;
     }
+
     bloquearCampos(false);
-    //focus no campo searchId
     searchId.focus();
+
     try {
-        const response = await fetch(`${API_BASE_URL}/pessoa/${id}`);
+        // ⚡ Usando cpf em vez de id
+        let url = `${API_BASE_URL}/pessoa/${cpf}`;
+        console.log(url)
+        const response = await fetch(url);
 
         if (response.ok) {
             const pessoa = await response.json();
             preencherFormulario(pessoa);
-
-            mostrarBotoes(true, false, true, true, false, false);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
+            mostrarBotoes(true, false, true, true, false, false);
             mostrarMensagem('Pessoa encontrada!', 'success');
-
+            currentPersonCpf = cpf;
         } else if (response.status === 404) {
             limparFormulario();
-            searchId.value = id;
-            mostrarBotoes(true, true, false, false, false, false); //mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
+            searchId.value = cpf;
+            mostrarBotoes(true, true, false, false, false, false);
             mostrarMensagem('Pessoa não encontrada. Você pode incluir uma nova pessoa.', 'info');
-            bloquearCampos(false);//bloqueia a pk e libera os demais campos
-            //enviar o foco para o campo de nome
+            bloquearCampos(false);
+            currentPersonCpf = cpf;
         } else {
             throw new Error('Erro ao buscar pessoa');
         }
@@ -116,6 +118,7 @@ async function buscarPessoa() {
         mostrarMensagem('Erro ao buscar pessoa', 'error');
     }
 }
+
 
 // Função para preencher formulário com dados da pessoa
 function preencherFormulario(pessoa) {
@@ -155,6 +158,7 @@ async function incluirPessoa() {
 // Função para alterar pessoa
 async function alterarPessoa() {
     mostrarMensagem('Digite os dados!', 'success');
+    currentPersonId = searchId.value;
     bloquearCampos(true);
     mostrarBotoes(false, false, false, false, true, true);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
     document.getElementById('nomepessoa').focus();
@@ -178,7 +182,12 @@ async function salvarOperacao() {
     const formData = new FormData(form);
     const pessoa = {
         cpfpessoa: searchId.value,
-        nomepessoa: formData.get('nomepessoa'),            
+        nomepessoa: formData.get('nomepessoa'),
+        emailpessoa: formData.get('emailpessoa'),
+        datanascimentopessoa: formData.get('datanascimentopessoa'),
+        senhapessoa: formData.get('senhapessoa')
+
+
     };
     let response = null;
     try {
@@ -191,6 +200,7 @@ async function salvarOperacao() {
                 body: JSON.stringify(pessoa)
             });
         } else if (operacao === 'alterar') {
+            console.log(pessoa)
             response = await fetch(`${API_BASE_URL}/pessoa/${currentPersonId}`, {
                 method: 'PUT',
                 headers: {
