@@ -1,8 +1,12 @@
--- Criar Banco de Dados
---CREATE DATABASE sistema_vendas;
---\c sistema_vendas;
+-- ============================================
+-- CRIAÇÃO DO BANCO DE DADOS (opcional)
+-- ============================================
+-- CREATE DATABASE sistema_vendas;
+-- \c sistema_vendas;
 
+-- ============================================
 -- TABELAS PRINCIPAIS
+-- ============================================
 
 CREATE TABLE Cargo (
     idCargo SERIAL PRIMARY KEY,
@@ -18,12 +22,12 @@ CREATE TABLE Pessoa (
 );
 
 CREATE TABLE Cliente (
-    PessoaCpfPessoa VARCHAR(20) PRIMARY KEY REFERENCES Pessoa(cpfPessoa),
+    PessoaCpfPessoa CHAR(11) PRIMARY KEY REFERENCES Pessoa(cpfPessoa),
     rendaCliente DOUBLE PRECISION
 );
 
 CREATE TABLE Funcionario (
-    PessoaCpfPessoa VARCHAR(20) PRIMARY KEY REFERENCES Pessoa(cpfPessoa),
+    PessoaCpfPessoa CHAR(11) PRIMARY KEY REFERENCES Pessoa(cpfPessoa),
     salario DOUBLE PRECISION,
     CargoIdCargo INT REFERENCES Cargo(idCargo),
     porcentagemComissao DOUBLE PRECISION
@@ -39,8 +43,8 @@ CREATE TABLE Produto (
 CREATE TABLE Pedido (
     idPedido SERIAL PRIMARY KEY,
     dataDoPedido DATE NOT NULL,
-    ClientePessoaCpfPessoa VARCHAR(20) REFERENCES Cliente(PessoaCpfPessoa),
-    FuncionarioPessoaCpfPessoa VARCHAR(20) REFERENCES Funcionario(PessoaCpfPessoa)
+    ClientePessoaCpfPessoa CHAR(11) REFERENCES Cliente(PessoaCpfPessoa),
+    FuncionarioPessoaCpfPessoa CHAR(11) REFERENCES Funcionario(PessoaCpfPessoa)
 );
 
 CREATE TABLE Pagamento (
@@ -55,9 +59,9 @@ CREATE TABLE FormaDePagamento (
     nomeFormaPagamento VARCHAR(100) NOT NULL
 );
 
--- ======================
+-- ============================================
 -- TABELAS RELACIONAIS
--- ======================
+-- ============================================
 
 CREATE TABLE PedidoHasProduto (
     ProdutoIdProduto INT REFERENCES Produto(idProduto),
@@ -74,14 +78,22 @@ CREATE TABLE PagamentoHasFormaPagamento (
     PRIMARY KEY (PagamentoIdPedido, FormaPagamentoIdFormaPagamento)
 );
 
--- ======================
+-- ============================================
 -- POPULAÇÃO DAS TABELAS
--- ======================
+-- ============================================
 
 -- Cargo
 INSERT INTO Cargo (nomeCargo) VALUES
-('Vendedor'),('Gerente'),('Atendente'),('Supervisor'),('Caixa'),
-('Auxiliar'),('Estoquista'),('Entregador'),('Assistente'),('Diretor');
+('Vendedor'),
+('Gerente'),
+('Atendente'),
+('Supervisor'),
+('Caixa'),
+('Auxiliar'),
+('Estoquista'),
+('Entregador'),
+('Assistente'),
+('Diretor');
 
 -- Pessoa
 INSERT INTO Pessoa (cpfPessoa, nomePessoa, dataNascimentoPessoa, emailPessoa, senhaPessoa) VALUES
@@ -95,7 +107,6 @@ INSERT INTO Pessoa (cpfPessoa, nomePessoa, dataNascimentoPessoa, emailPessoa, se
 ('88888888888','Juliana Costa','1993-02-22','juliana.costa@email.com','senha123'),
 ('99999999999','Pedro Martins','1999-06-05','pedro.martins@email.com','senha123'),
 ('10101010101','Clara Mendes','2000-08-18','clara.mendes@email.com','senha123');
-
 
 -- Cliente
 INSERT INTO Cliente VALUES
@@ -123,18 +134,18 @@ INSERT INTO Funcionario VALUES
 ('99999999999',2900.00,9,0.07),
 ('10101010101',3500.00,10,0.12);
 
--- Produto
+-- Produto (Artigos Católicos)
 INSERT INTO Produto (nomeProduto, quantidadeEmEstoque, precoUnitario) VALUES
-('Notebook',10,3500.00),
-('Mouse',50,50.00),
-('Teclado',40,120.00),
-('Monitor',20,900.00),
-('Impressora',15,700.00),
-('Cadeira Gamer',12,1500.00),
-('Headset',30,250.00),
-('Webcam',25,300.00),
-('HD Externo',18,400.00),
-('SSD',22,500.00);
+('Terço de Madeira', 50, 15.00),
+('Imagem de Nossa Senhora Aparecida', 20, 80.00),
+('Crucifixo de Parede', 25, 60.00),
+('Bíblia Sagrada', 30, 45.00),
+('Vela Religiosa', 100, 5.00),
+('Chaveiro de Santo Antônio', 40, 12.00),
+('Escapulário', 70, 10.00),
+('Quadro do Sagrado Coração de Jesus', 15, 90.00),
+('Pulseira Religiosa', 35, 18.00),
+('Rosário Luminoso', 28, 25.00);
 
 -- Pedido
 INSERT INTO Pedido (dataDoPedido, ClientePessoaCpfPessoa, FuncionarioPessoaCpfPessoa) VALUES
@@ -151,44 +162,39 @@ INSERT INTO Pedido (dataDoPedido, ClientePessoaCpfPessoa, FuncionarioPessoaCpfPe
 
 -- Pagamento
 INSERT INTO Pagamento (PedidoIdPedido, dataPagamento, valorTotalPagamento) VALUES
-(1,'2025-09-01 10:00:00',3600.00),
-(2,'2025-09-02 11:00:00',120.00),
-(3,'2025-09-03 14:00:00',700.00),
-(4,'2025-09-04 16:00:00',1500.00),
+(1,'2025-09-01 10:00:00',150.00),
+(2,'2025-09-02 11:00:00',200.00),
+(3,'2025-09-03 14:00:00',300.00),
+(4,'2025-09-04 16:00:00',400.00),
 (5,'2025-09-05 09:00:00',500.00),
-(6,'2025-09-06 12:30:00',900.00),
-(7,'2025-09-07 15:20:00',400.00),
-(8,'2025-09-08 13:10:00',250.00),
-(9,'2025-09-09 17:45:00',800.00),
-(10,'2025-09-10 08:50:00',3000.00);
+(6,'2025-09-06 12:30:00',600.00),
+(7,'2025-09-07 15:20:00',700.00),
+(8,'2025-09-08 13:10:00',800.00),
+(9,'2025-09-09 17:45:00',900.00),
+(10,'2025-09-10 08:50:00',1000.00);
 
--- FormaDePagamento
+-- FormaDePagamento (somente cartão e pix)
 INSERT INTO FormaDePagamento (nomeFormaPagamento) VALUES
 ('Cartão de Crédito'),
 ('Cartão de Débito'),
-('Boleto Bancário'),
-('Pix'),
-('Dinheiro'),
-('Transferência'),
-('Cheque'),
-('Vale Alimentação'),
-('Crédito Loja'),
-('Outro');
+('Pix');
 
--- ======================
--- POPULAÇÃO DAS RELACIONAIS (5 registros)
--- ======================
+-- ============================================
+-- POPULAÇÃO DAS RELACIONAIS (5 REGISTROS)
+-- ============================================
 
+-- PedidoHasProduto
 INSERT INTO PedidoHasProduto VALUES
-(1,1,1,3500.00),
-(2,2,2,50.00),
-(3,3,1,120.00),
-(4,4,1,900.00),
-(5,5,1,700.00);
+(1,1,2,15.00),
+(2,2,1,80.00),
+(3,3,1,60.00),
+(4,4,3,45.00),
+(5,5,2,5.00);
 
+-- PagamentoHasFormaPagamento (IDs válidos 1 a 3)
 INSERT INTO PagamentoHasFormaPagamento VALUES
-(1,1,3500.00),
-(2,2,120.00),
-(3,3,700.00),
-(4,4,1500.00),
-(5,5,500.00);
+(1,1,150.00),  -- Cartão de Crédito
+(2,2,200.00),  -- Cartão de Débito
+(3,3,300.00),  -- Pix
+(4,1,400.00),  -- Cartão de Crédito
+(5,3,500.00);  -- Pix

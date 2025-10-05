@@ -5,7 +5,7 @@ let currentPersonId = null;
 let operacao = null;
 
 // Elementos do DOM
-const form = document.getElementById('questaoForm');
+const form = document.getElementById('pedidoForm');
 const searchId = document.getElementById('searchId');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnIncluir = document.getElementById('btnIncluir');
@@ -13,19 +13,19 @@ const btnAlterar = document.getElementById('btnAlterar');
 const btnExcluir = document.getElementById('btnExcluir');
 const btnCancelar = document.getElementById('btnCancelar');
 const btnSalvar = document.getElementById('btnSalvar');
-const questoesTableBody = document.getElementById('questoesTableBody');
+const pedidosTableBody = document.getElementById('pedidosTableBody');
 const messageContainer = document.getElementById('messageContainer');
 
-// Carregar lista de questoes ao inicializar
+// Carregar lista de pedidos ao inicializar
 document.addEventListener('DOMContentLoaded', () => {
-    carregarQuestoes();
+    carregarPedidos();
 });
 
 // Event Listeners
-btnBuscar.addEventListener('click', buscarQuestao);
-btnIncluir.addEventListener('click', incluirQuestao);
-btnAlterar.addEventListener('click', alterarQuestao);
-btnExcluir.addEventListener('click', excluirQuestao);
+btnBuscar.addEventListener('click', buscarPedido);
+btnIncluir.addEventListener('click', incluirPedido);
+btnAlterar.addEventListener('click', alterarPedido);
+btnExcluir.addEventListener('click', excluirPedido);
 btnCancelar.addEventListener('click', cancelarOperacao);
 btnSalvar.addEventListener('click', salvarOperacao);
 
@@ -81,8 +81,8 @@ function converterDataParaISO(dataString) {
     return new Date(dataString).toISOString();
 }
 
-// Função para buscar questao por ID
-async function buscarQuestao() {
+// Função para buscar pedido por ID
+async function buscarPedido() {
     const id = searchId.value.trim();
     if (!id) {
         mostrarMensagem('Digite um ID para buscar', 'warning');
@@ -92,70 +92,79 @@ async function buscarQuestao() {
     //focus no campo searchId
     searchId.focus();
     try {
-        const response = await fetch(`${API_BASE_URL}/questao/${id}`);
+        const response = await fetch(`${API_BASE_URL}/pedido/${id}`);
 
         if (response.ok) {
-            const questao = await response.json();
-            preencherFormulario(questao);
+            const pedido = await response.json();
+            preencherFormulario(pedido);
 
             mostrarBotoes(true, false, true, true, false, false);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-            mostrarMensagem('Questao encontrada!', 'success');
+            mostrarMensagem('Pedido encontrado!', 'success');
 
         } else if (response.status === 404) {
             limparFormulario();
             searchId.value = id;
             mostrarBotoes(true, true, false, false, false, false); //mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-            mostrarMensagem('Questao não encontrada. Você pode incluir uma nova questao.', 'info');
+            mostrarMensagem('Pedido não encontrado. Você pode incluir um novo pedido.', 'info');
             bloquearCampos(false);//bloqueia a pk e libera os demais campos
             //enviar o foco para o campo de nome
         } else {
-            throw new Error('Erro ao buscar questao');
+            throw new Error('Erro ao buscar pedido');
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao buscar questao', 'error');
+        mostrarMensagem('Erro ao buscar pedido', 'error');
     }
 }
 
-// Função para preencher formulário com dados da questao
-function preencherFormulario(questao) {
-    currentPersonId = questao.id_questao;
-    searchId.value = questao.id_questao;
-    document.getElementById('texto_questao').value = questao.texto_questao || '';
-    document.getElementById('texto_questao').value = questao.texto_questao || '';
-    document.getElementById('nota_maxima_questao').value = questao.nota_maxima_questao || '';
-    document.getElementById('texto_complementar_questao').value = questao.texto_complementar_questao || '';   
+// Função para preencher formulário com dados da pedido
+function preencherFormulario(pedido) {
+    currentPersonId = pedido.idpedido;
+    searchId.value = pedido.idpedido;
+    document.getElementById('datadopedido').value = pedido.datadopedido || '';
+    document.getElementById('clientepessoacpfpessoa').value = pedido.clientepessoacpfpessoa || '';
+    document.getElementById('funcionariopessoacpfpessoa').value = pedido.funcionariopessoacpfpessoa || '';
 }
 
 
-// Função para incluir questao
-async function incluirQuestao() {
+// Função para incluir pedido
+async function incluirPedido() {
 
     mostrarMensagem('Digite os dados!', 'success');
     currentPersonId = searchId.value;
-    // console.log('Incluir nova questao - currentPersonId: ' + currentPersonId);
+    // console.log('Incluir nova pedido - currentPersonId: ' + currentPersonId);
     limparFormulario();
     searchId.value = currentPersonId;
     bloquearCampos(true);
 
     mostrarBotoes(false, false, false, false, true, true); // mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('texto_questao').focus();
+    document.getElementById('datadopedido').focus();
+
+    document.getElementById('clientepessoacpfpessoa').value = '';
+    document.getElementById('funcionariopessoacpfpessoa').value = '';
+
     operacao = 'incluir';
-    // console.log('fim nova questao - currentPersonId: ' + currentPersonId);
+    // console.log('fim nova pedido - currentPersonId: ' + currentPersonId);
 }
 
-// Função para alterar questao
-async function alterarQuestao() {
+
+// Função para alterar pedido
+async function alterarPedido() {
     mostrarMensagem('Digite os dados!', 'success');
     bloquearCampos(true);
     mostrarBotoes(false, false, false, false, true, true);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('texto_questao').focus();
+    document.getElementById('datadopedido').focus();
+
+    document.getElementById('clientepessoacpfpessoa').value = '';
+    document.getElementById('funcionariopessoacpfpessoa').value = '';
+
     operacao = 'alterar';
 }
 
-// Função para excluir questao
-async function excluirQuestao() {
-    mostrarMensagem('Excluindo questao...', 'info');
+
+// Função para excluir pedido
+async function excluirPedido() {
+    mostrarMensagem('Excluindo pedido...', 'info');
     currentPersonId = searchId.value;
     //bloquear searchId
     searchId.disabled = true;
@@ -168,54 +177,54 @@ async function salvarOperacao() {
     console.log('Operação:', operacao + ' - currentPersonId: ' + currentPersonId + ' - searchId: ' + searchId.value);
 
     const formData = new FormData(form);
-    const questao = {
-        id_questao: searchId.value,
-        texto_questao: formData.get('texto_questao'),
-        nota_maxima_questao: formData.get('nota_maxima_questao'),
-        texto_complementar_questao: formData.get('texto_complementar_questao')        
+    const pedido = {
+        idpedido: searchId.value,
+        datadopedido: formData.get('datadopedido'),
+        clientepessoacpfpessoa: formData.get('clientepessoacpfpessoa'),
+        funcionariopessoacpfpessoa: formData.get('funcionariopessoacpfpessoa'),          
     };
     let response = null;
     try {
         if (operacao === 'incluir') {
-            response = await fetch(`${API_BASE_URL}/questao`, {
+            response = await fetch(`${API_BASE_URL}/pedido`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(questao)
+                body: JSON.stringify(pedido)
             });
         } else if (operacao === 'alterar') {
-            response = await fetch(`${API_BASE_URL}/questao/${currentPersonId}`, {
+            response = await fetch(`${API_BASE_URL}/pedido/${currentPersonId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(questao)
+                body: JSON.stringify(pedido)
             });
         } else if (operacao === 'excluir') {
-            // console.log('Excluindo questao com ID:', currentPersonId);
-            response = await fetch(`${API_BASE_URL}/questao/${currentPersonId}`, {
+            // console.log('Excluindo pedido com ID:', currentPersonId);
+            response = await fetch(`${API_BASE_URL}/pedido/${currentPersonId}`, {
                 method: 'DELETE'
             });
-            console.log('Questao excluída' + response.status);
+            console.log('Pedido excluído' + response.status);
         }
         if (response.ok && (operacao === 'incluir' || operacao === 'alterar')) {
-            const novaQuestao = await response.json();
+            const novoPedido = await response.json();
             mostrarMensagem('Operação ' + operacao + ' realizada com sucesso!', 'success');
             limparFormulario();
-            carregarQuestoes();
+            carregarPedidos();
 
         } else if (operacao !== 'excluir') {
             const error = await response.json();
-            mostrarMensagem(error.error || 'Erro ao incluir questao', 'error');
+            mostrarMensagem(error.error || 'Erro ao incluir pedido', 'error');
         } else {
-            mostrarMensagem('Questao excluída com sucesso!', 'success');
+            mostrarMensagem('Pedido excluído com sucesso!', 'success');
             limparFormulario();
-            carregarQuestoes();
+            carregarPedidos();
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao incluir ou alterar a questao', 'error');
+        mostrarMensagem('Erro ao incluir ou alterar o pedido', 'error');
     }
 
     mostrarBotoes(true, false, false, false, false, false);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
@@ -232,46 +241,49 @@ function cancelarOperacao() {
     mostrarMensagem('Operação cancelada', 'info');
 }
 
-// Função para carregar lista de questoes
-async function carregarQuestoes() {
+// Função para carregar lista de pedidos
+async function carregarPedidos() {
     try {
-        const response = await fetch(`${API_BASE_URL}/questao`);
+        const response = await fetch(`${API_BASE_URL}/pedido`);
     //    debugger
         if (response.ok) {
-            const questoes = await response.json();
-            renderizarTabelaQuestoes(questoes);
+            const pedidos = await response.json();
+            renderizarTabelaPedidos(pedidos);
         } else {
-            throw new Error('Erro ao carregar questoes');
+            throw new Error('Erro ao carregar pedidos');
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao carregar lista de questoes', 'error');
+        mostrarMensagem('Erro ao carregar lista de pedidos', 'error');
     }
 }
 
-// Função para renderizar tabela de questoes
-function renderizarTabelaQuestoes(questoes) {
-    questoesTableBody.innerHTML = '';
 
-    questoes.forEach(questao => {
+// Função para renderizar tabela de pedidos
+function renderizarTabelaPedidos(pedidos) {
+    pedidosTableBody.innerHTML = '';
+
+    pedidos.forEach(pedido => {
         const row = document.createElement('tr');
         row.innerHTML = `
                     <td>
-                        <button class="btn-id" onclick="selecionarQuestao(${questao.id_questao})">
-                            ${questao.id_questao}
+                        <button class="btn-id" onclick="selecionarPedido(${pedido.idpedido})">
+                            ${pedido.idpedido}
                         </button>
                     </td>
-                    <td>${questao.texto_questao}</td>
-                    <td>${questao.nota_maxima_questao}</td>
-                    <td>${questao.texto_complementar_questao}</td>
+                    <td>${pedido.datadopedido}</td>
+                    <td>${pedido.clientepessoacpfpessoa}</td>
+                    <td>${pedido.funcionariopessoacpfpessoa}</td>
+
                                  
                 `;
-        questoesTableBody.appendChild(row);
+        pedidosTableBody.appendChild(row);
     });
 }
 
-// Função para selecionar questao da tabela
-async function selecionarQuestao(id) {
+
+// Função para selecionar pedido da tabela
+async function selecionarPedido(id) {
     searchId.value = id;
-    await buscarQuestao();
+    await buscarPedido();
 }

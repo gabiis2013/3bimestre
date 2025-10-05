@@ -113,7 +113,7 @@ exports.atualizarProduto = async (req, res) => {
 
     // Atualiza a produto
     const updateResult = await query(
-      'UPDATE produto SET nomeproduto = $1 WHERE quantidadeemestoque = $2 WHERE precounitario = $3 WHERE idproduto = $4 RETURNING *',
+      'UPDATE produto SET nomeproduto = $1, quantidadeemestoque = $2, precounitario = $3 WHERE idproduto = $4 RETURNING *',
       [updatedFields.nomeproduto, quantidadeemestoque, precounitario, id]
     );
 

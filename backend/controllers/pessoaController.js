@@ -90,7 +90,7 @@ exports.atualizarPessoa = async (req, res) => {
 
       const updateResult = await query(
           'UPDATE pessoa SET nomePessoa = $1, emailPessoa = $2, senhaPessoa = $3, dataNascimentoPessoa = $4 WHERE cpfPessoa = $5 RETURNING *',
-          [updatedFields.nomePessoa, updatedFields.emailPessoa, updatedFields.senhaPessoa, updatedFields.dataNascimentoPessoa, cpfPessoa]
+          [updatedFields.nomePessoa, emailPessoa, senhaPessoa, dataNascimentoPessoa, cpfPessoa]
       );
 
       res.json(updateResult.rows[0]);

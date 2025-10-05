@@ -70,6 +70,7 @@ app.use((err, req, res, next) => {
 // só mexa nessa parte
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Importando as rotas
+
 //const loginRoutes = require('./routes/loginRoutes');
 //app.use('/login', loginRoutes);
 
@@ -79,8 +80,8 @@ app.use('/', menuRoutes);
 //const pessoaRoutes = require('./routes/pessoaRoutes');
 //app.use('/pessoa', pessoaRoutes);
 
-//const questaoRoutes = require('./routes/questaoRoutes');
-//app.use('/questao', questaoRoutes);
+const pedidoRoutes = require('./routes/pedidoRoutes');
+app.use('/pedido', pedidoRoutes);
 
 const produtoRoutes = require('./routes/produtoRoutes');
 app.use('/produto', produtoRoutes);
@@ -88,12 +89,13 @@ app.use('/produto', produtoRoutes);
 //const avaliadorRoutes = require('./routes/avaliadorRoutes');
 //app.use('/avaliador', avaliadorRoutes);
 
-//const avaliadoRoutes = require('./routes/avaliadoRoutes');
-//app.use('/avaliado', avaliadoRoutes);
+const clienteRoutes = require('./routes/clienteRoutes');
+app.use('/cliente', clienteRoutes);
 
 
-//const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
-//app.use('/avaliacao', avaliacaoRoutes);
+const formadepagamentoRoutes = require('./routes/formadepagamentoRoutes');
+app.use('/formadepagamento', formadepagamentoRoutes);
+
 
 //const avaliacaoHasQuestaoRoutes = require('./routes/avaliacaoHasQuestaoRoutes');
 //app.use('/avaliacaoHasQuestao', avaliacaoHasQuestaoRoutes);
