@@ -114,11 +114,11 @@ exports.atualizarPagamento = async (req, res) => {
       valortotalpagamento: valortotalpagamento !== undefined ? valortotalpagamento : currentPerson.valortotalpagamento,
   }
 
-    // Atualiza a pagamento
-    const updateResult = await query(
-      'UPDATE pagamento SET pedidoidpedido = $1, datapagamento = &2, valortotalpagamento = $3 WHERE idpagamento = $4 RETURNING *',
-      [updatedFields. pedidoidpedido, datapagamento, valortotalpagamento, id]
-    );
+  const updateResult = await query(
+    'UPDATE pagamento SET pedidoidpedido = $1, datapagamento = $2, valortotalpagamento = $3 WHERE idpagamento = $4 RETURNING *',
+    [updatedFields.pedidoidpedido, updatedFields.datapagamento, updatedFields.valortotalpagamento, id]
+  );
+  
 
     res.json(updateResult.rows[0]);
   } catch (error) {

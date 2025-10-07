@@ -155,8 +155,6 @@ async function alterarPedido() {
     mostrarBotoes(false, false, false, false, true, true);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
     document.getElementById('datadopedido').focus();
 
-    document.getElementById('clientepessoacpfpessoa').value = '';
-    document.getElementById('funcionariopessoacpfpessoa').value = '';
 
     operacao = 'alterar';
 }

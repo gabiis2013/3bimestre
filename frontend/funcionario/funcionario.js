@@ -5,7 +5,7 @@ let currentPersonId = null;
 let operacao = null;
 
 // Elementos do DOM
-const form = document.getElementById('pessoaForm');
+const form = document.getElementById('funcionarioForm');
 const searchId = document.getElementById('searchId');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnIncluir = document.getElementById('btnIncluir');
@@ -13,19 +13,19 @@ const btnAlterar = document.getElementById('btnAlterar');
 const btnExcluir = document.getElementById('btnExcluir');
 const btnCancelar = document.getElementById('btnCancelar');
 const btnSalvar = document.getElementById('btnSalvar');
-const pessoasTableBody = document.getElementById('pessoasTableBody');
+const funcionariosTableBody = document.getElementById('funcionariosTableBody');
 const messageContainer = document.getElementById('messageContainer');
 
-// Carregar lista de pessoas ao inicializar
+// Carregar lista de funcionarios ao inicializar
 document.addEventListener('DOMContentLoaded', () => {
-    carregarPessoas();
+    carregarFuncionarios();
 });
 
 // Event Listeners
-btnBuscar.addEventListener('click', buscarPessoa);
-btnIncluir.addEventListener('click', incluirPessoa);
-btnAlterar.addEventListener('click', alterarPessoa);
-btnExcluir.addEventListener('click', excluirPessoa);
+btnBuscar.addEventListener('click', buscarFuncionario);
+btnIncluir.addEventListener('click', incluirFuncionario);
+btnAlterar.addEventListener('click', alterarFuncionario);
+btnExcluir.addEventListener('click', excluirFuncionario);
 btnCancelar.addEventListener('click', cancelarOperacao);
 btnSalvar.addEventListener('click', salvarOperacao);
 
@@ -80,94 +80,81 @@ function converterDataParaISO(dataString) {
     if (!dataString) return null;
     return new Date(dataString).toISOString();
 }
-// Buscar pessoa por CPF
-async function buscarPessoa() {
-    const cpf = searchId.value.trim();
-    if (!cpf) {
-        mostrarMensagem('Digite um CPF para buscar', 'warning');
+
+// Função para buscar funcionario por ID
+async function buscarFuncionario() {
+    const id = searchId.value.trim();
+    if (!id) {
+        mostrarMensagem('Digite um ID para buscar', 'warning');
         return;
     }
-
     bloquearCampos(false);
+    //focus no campo searchId
     searchId.focus();
-
     try {
-        // ⚡ Usando cpf em vez de id
-        let url = `${API_BASE_URL}/pessoa/${cpf}`;
-        console.log(url)
-        const response = await fetch(url);
+        const response = await fetch(`${API_BASE_URL}/funcionario/${id}`);
 
         if (response.ok) {
-            const pessoa = await response.json();
-            preencherFormulario(pessoa);
-            mostrarBotoes(true, false, true, true, false, false);
-            mostrarMensagem('Pessoa encontrada!', 'success');
-            currentPersonCpf = cpf;
+            const funcionario = await response.json();
+            preencherFormulario(funcionario);
+
+            mostrarBotoes(true, false, true, true, false, false);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
+            mostrarMensagem('Funcionario encontrado!', 'success');
+
         } else if (response.status === 404) {
             limparFormulario();
-            searchId.value = cpf;
-            mostrarBotoes(true, true, false, false, false, false);
-            mostrarMensagem('Pessoa não encontrada. Você pode incluir uma nova pessoa.', 'info');
-            bloquearCampos(false);
-            currentPersonCpf = cpf;
+            searchId.value = id;
+            mostrarBotoes(true, true, false, false, false, false); //mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
+            mostrarMensagem('Funcionario não encontrada. Você pode incluir um novo funcionario.', 'info');
+            bloquearCampos(false);//bloqueia a pk e libera os demais campos
+            //enviar o foco para o campo de nome
         } else {
-            throw new Error('Erro ao buscar pessoa');
+            throw new Error('Erro ao buscar funcionario');
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao buscar pessoa', 'error');
+        mostrarMensagem('Erro ao buscar funcionario', 'error');
     }
 }
 
-
-// Função para preencher formulário com dados da pessoa
-function preencherFormulario(pessoa) {
-    currentPersonId = pessoa.cpfpessoa;
-    searchId.value = pessoa.cpfpessoa;
-    document.getElementById('nomepessoa').value = pessoa.nomepessoa || '';
-    document.getElementById('emailpessoa').value = pessoa.emailpessoa || '';
-    document.getElementById('senhapessoa').value = pessoa.senhapessoa || '';
-
-    // Formatação da data para input type="date"
-    if (pessoa.datanascimentopessoa) {
-        const data = new Date(pessoa.datanascimentopessoa);
-        const dataFormatada = data.toISOString().split('T')[0];
-        document.getElementById('datanascimentopessoa').value = dataFormatada;
-    } else {
-        document.getElementById('datanascimentopessoa').value = '';
-    }
+// Função para preencher formulário com dados da funcionario
+function preencherFormulario(funcionario) {
+    currentPersonId = funcionario.pessoacpfpessoa;
+    searchId.value = funcionario.pessoacpfpessoa;
+    document.getElementById('cargoidcargo').value = funcionario.cargoidcargo || '';
+    document.getElementById('salario').value = funcionario.salario || '';
+    document.getElementById('porcentagemcomissao').value = funcionario.porcentagemcomissao || '';  
 }
 
 
-// Função para incluir pessoa
-async function incluirPessoa() {
+// Função para incluir funcionario
+async function incluirFuncionario() {
 
     mostrarMensagem('Digite os dados!', 'success');
     currentPersonId = searchId.value;
-    // console.log('Incluir nova pessoa - currentPersonId: ' + currentPersonId);
+    // console.log('Incluir nova funcionario - currentPersonId: ' + currentPersonId);
     limparFormulario();
     searchId.value = currentPersonId;
     bloquearCampos(true);
 
     mostrarBotoes(false, false, false, false, true, true); // mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('nomepessoa').focus();
+    document.getElementById('cargoidcargo').focus();
     operacao = 'incluir';
-    // console.log('fim nova pessoa - currentPersonId: ' + currentPersonId);
+    // console.log('fim nova funcionario - currentPersonId: ' + currentPersonId);
 }
 
-// Função para alterar pessoa
-async function alterarPessoa() {
+// Função para alterar funcionario
+async function alterarFuncionario() {
     mostrarMensagem('Digite os dados!', 'success');
-    currentPersonId = searchId.value;
     bloquearCampos(true);
     mostrarBotoes(false, false, false, false, true, true);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
-    document.getElementById('nomepessoa').focus();
+    document.getElementById('cargoidcargo').focus();
     operacao = 'alterar';
 }
 
-// Função para excluir pessoa
-async function excluirPessoa() {
-    mostrarMensagem('Excluindo pessoa...', 'info');
+// Função para excluir funcionario
+async function excluirFuncionario() {
+    mostrarMensagem('Excluindo funcionario...', 'info');
     currentPersonId = searchId.value;
     //bloquear searchId
     searchId.disabled = true;
@@ -180,59 +167,55 @@ async function salvarOperacao() {
     console.log('Operação:', operacao + ' - currentPersonId: ' + currentPersonId + ' - searchId: ' + searchId.value);
 
     const formData = new FormData(form);
-    const pessoa = {
-        cpfpessoa: searchId.value,
-        nomepessoa: formData.get('nomepessoa'),
-        emailpessoa: formData.get('emailpessoa'),
-        datanascimentopessoa: formData.get('datanascimentopessoa'),
-        senhapessoa: formData.get('senhapessoa')
-
-
+    const funcionario = {
+        pessoacpfpessoa: searchId.value,
+        cargoidcargo: formData.get('cargoidcargo'),
+        salario: formData.get('salario'),
+        porcentagemcomissao: formData.get('porcentagemcomissao'),
+                   
     };
     let response = null;
     try {
         if (operacao === 'incluir') {
-            response = await fetch(`${API_BASE_URL}/pessoa`, {
+            response = await fetch(`${API_BASE_URL}/funcionario`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(pessoa)
+                body: JSON.stringify(funcionario)
             });
         } else if (operacao === 'alterar') {
-            console.log(pessoa)
-            response = await fetch(`${API_BASE_URL}/pessoa/${currentPersonId}`, {
+            response = await fetch(`${API_BASE_URL}/funcionario/${currentPersonId}`, {
                 method: 'PUT',
-
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(pessoa)
+                body: JSON.stringify(funcionario)
             });
         } else if (operacao === 'excluir') {
-            // console.log('Excluindo pessoa com CPF:', currentPersonId);
-            response = await fetch(`${API_BASE_URL}/pessoa/${currentPersonId}`, {
+            // console.log('Excluindo funcionario com ID:', currentPersonId);
+            response = await fetch(`${API_BASE_URL}/funcionario/${currentPersonId}`, {
                 method: 'DELETE'
             });
-            console.log('Pessoa excluída' + response.status);
+            console.log('Funcionario excluído' + response.status);
         }
         if (response.ok && (operacao === 'incluir' || operacao === 'alterar')) {
-            const novaPessoa = await response.json();
+            const novoFuncionario = await response.json();
             mostrarMensagem('Operação ' + operacao + ' realizada com sucesso!', 'success');
             limparFormulario();
-            carregarPessoas();
+            carregarFuncionarios();
 
         } else if (operacao !== 'excluir') {
             const error = await response.json();
-            mostrarMensagem(error.error || 'Erro ao incluir pessoa', 'error');
+            mostrarMensagem(error.error || 'Erro ao incluir funcionario', 'error');
         } else {
-            mostrarMensagem('Pessoa excluída com sucesso!', 'success');
+            mostrarMensagem('Funcionario excluído com sucesso!', 'success');
             limparFormulario();
-            carregarPessoas();
+            carregarFuncionarios();
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao incluir ou alterar a pessoa', 'error');
+        mostrarMensagem('Erro ao incluir ou alterar o funcionario', 'error');
     }
 
     mostrarBotoes(true, false, false, false, false, false);// mostrarBotoes(btBuscar, btIncluir, btAlterar, btExcluir, btSalvar, btCancelar)
@@ -249,45 +232,46 @@ function cancelarOperacao() {
     mostrarMensagem('Operação cancelada', 'info');
 }
 
-// Função para carregar lista de pessoas
-async function carregarPessoas() {
+// Função para carregar lista de funcionarios
+async function carregarFuncionarios() {
     try {
-        const response = await fetch(`${API_BASE_URL}/pessoa`);
-        //    debugger
+        const response = await fetch(`${API_BASE_URL}/funcionario`);
+    //    debugger
         if (response.ok) {
-            const pessoas = await response.json();
-            renderizarTabelaPessoas(pessoas);
+            const funcionarios = await response.json();
+            renderizarTabelaFuncionarios(funcionarios);
         } else {
-            throw new Error('Erro ao carregar pessoas');
+            throw new Error('Erro ao carregar funcionarios');
         }
     } catch (error) {
         console.error('Erro:', error);
-        mostrarMensagem('Erro ao carregar lista de pessoas', 'error');
+        mostrarMensagem('Erro ao carregar lista de funcionarios', 'error');
     }
 }
 
-// Função para renderizar tabela de pessoas
-function renderizarTabelaPessoas(pessoas) {
-    pessoasTableBody.innerHTML = '';
+// Função para renderizar tabela de funcionarios
+function renderizarTabelaFuncionarios(funcionarios) {
+    funcionariosTableBody.innerHTML = '';
 
-    pessoas.forEach(pessoa => {
+    funcionarios.forEach(funcionario => {
         const row = document.createElement('tr');
         row.innerHTML = `
                     <td>
-                        <button class="btn-id" onclick="selecionarPessoa(${pessoa.cpfpessoa})">
-                            ${pessoa.cpfpessoa}
+                        <button class="btn-id" onclick="selecionarFuncionario(${funcionario.pessoacpfpessoa})">
+                            ${funcionario.pessoacpfpessoa}
                         </button>
                     </td>
-                    <td>${pessoa.nomepessoa}</td>
-                    <td>${pessoa.emailpessoa}</td>
-                    <td>${formatarData(pessoa.datanascimentopessoa)}</td>                 
+                    <td>${funcionario.cargoidcargo}</td>
+                    <td>${funcionario.salario}</td>
+                    <td>${funcionario.porcentagemcomissao}</td>
+                                 
                 `;
-        pessoasTableBody.appendChild(row);
+        funcionariosTableBody.appendChild(row);
     });
 }
 
-// Função para selecionar pessoa da tabela
-async function selecionarPessoa(cpf) {
-    searchId.value = cpf;
-    await buscarPessoa();
+// Função para selecionar funcionario da tabela
+async function selecionarFuncionario(id) {
+    searchId.value = id;
+    await buscarFuncionario();
 }

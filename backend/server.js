@@ -77,8 +77,8 @@ app.use((err, req, res, next) => {
 const menuRoutes = require('./routes/menuRoutes');
 app.use('/', menuRoutes);
 
-//const pessoaRoutes = require('./routes/pessoaRoutes');
-//app.use('/pessoa', pessoaRoutes);
+const pessoaRoutes = require('./routes/pessoaRoutes');
+app.use('/pessoa', pessoaRoutes);
 
 const pedidoRoutes = require('./routes/pedidoRoutes');
 app.use('/pedido', pedidoRoutes);
@@ -86,8 +86,8 @@ app.use('/pedido', pedidoRoutes);
 const produtoRoutes = require('./routes/produtoRoutes');
 app.use('/produto', produtoRoutes);
 
-//const avaliadorRoutes = require('./routes/avaliadorRoutes');
-//app.use('/avaliador', avaliadorRoutes);
+const funcionarioRoutes = require('./routes/funcionarioRoutes');
+app.use('/funcionario', funcionarioRoutes);
 
 const clienteRoutes = require('./routes/clienteRoutes');
 app.use('/cliente', clienteRoutes);
