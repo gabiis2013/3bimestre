@@ -123,7 +123,17 @@ function preencherFormulario(pagamento) {
     searchId.value = pagamento.idpagamento;
     document.getElementById('pedidoidpedido').value = pagamento.pedidoidpedido || '';
     document.getElementById('datapagamento').value = pagamento.datapagamento || '';
-    document.getElementById('valortotalpagamento').value = pagamento.valortotalpagamento || '';  
+    document.getElementById('valortotalpagamento').value = pagamento.valortotalpagamento || ''; 
+    
+    // Formatação da data para input type="date"
+    if (pagamento.datapagamento) {
+        const data = new Date(pagamento.datapagamento);
+        const dataFormatada = data.toISOString().split('T')[0];
+        document.getElementById('datapagamento').value = dataFormatada;
+    } else {
+        document.getElementById('datapagamento').value = '';
+    }
+    
 }
 
 

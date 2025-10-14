@@ -122,6 +122,7 @@ function preencherFormulario(cliente) {
     currentPersonId = cliente.pessoacpfpessoa;
     searchId.value = cliente.pessoacpfpessoa;
     document.getElementById('rendacliente').value = cliente.rendacliente || '';  
+
 }
 
 

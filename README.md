@@ -32,3 +32,5 @@ CRUD Pessoa tem relacionamentos com professor, avaliado e avaliador (relações 
 2.6 - execute o script
 
 2.7 - deverá criar as tabelas no bd
+
+### 3 - link video do projeto https://drive.google.com/file/d/1cUujI22xnotCdaq5pF04O2oJAhqiwhiE/view?usp=drive_link

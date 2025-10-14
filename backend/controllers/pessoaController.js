@@ -11,7 +11,7 @@ exports.abrirCrudPessoa = (req, res) => {
 // Listar todas as pessoas
 exports.listarPessoas = async (req, res) => {
   try {
-    const result = await query('SELECT * FROM pessoa ORDER BY cpfPessoa');
+    const result = await query('SELECT * FROM pessoa ORDER BY cpfpessoa');
     res.json(result.rows);
   } catch (error) {
     console.error('Erro ao listar pessoas:', error);
@@ -22,15 +22,15 @@ exports.listarPessoas = async (req, res) => {
 // Criar pessoa
 exports.criarPessoa = async (req, res) => {
   try {
-    const { cpfPessoa, nomePessoa, dataNascimentoPessoa, emailPessoa, senhaPessoa } = req.body;
+    const { cpfpessoa, nomepessoa, datanascimentopessoa, emailpessoa, senhapessoa } = req.body;
 
-    if (!cpfPessoa || !nomePessoa || !dataNascimentoPessoa || !emailPessoa || !senhaPessoa) {
-      return res.status(400).json({ error: 'cpfPessoa, nomePessoa, dataNascimentoPessoa, emailPessoa e senhaPessoa são obrigatórios' });
+    if (!cpfpessoa || !nomepessoa || !datanascimentopessoa || !emailpessoa || !senhapessoa) {
+      return res.status(400).json({ error: 'cpfpessoa, nomepessoa, datanascimentopessoa, emailpessoa e senhapessoa são obrigatórios' });
     }
 
     const result = await query(
-      'INSERT INTO pessoa (cpfPessoa, nomePessoa, dataNascimentoPessoa, emailPessoa, senhaPessoa) VALUES ($1, $2, $3, &4, &5) RETURNING *',
-      [cpfPessoa, nomePessoa, dataNascimentoPessoa, emailPessoa, senhaPessoa]
+      'INSERT INTO pessoa (cpfpessoa, nomepessoa, datanascimentopessoa, emailpessoa, senhapessoa) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [cpfpessoa, nomepessoa, datanascimentopessoa, emailpessoa, senhapessoa]
     );
 
     res.status(201).json(result.rows[0]);
@@ -51,8 +51,8 @@ exports.obterPessoa = async (req, res) => {
   try {
       
    
-      const cpfPessoa = req.params.cpfPessoa; // antes: id
-      const result = await query('SELECT * FROM pessoa WHERE cpfpessoa = $1', [cpfPessoa]);
+      const cpfpessoa = req.params.cpfpessoa; // antes: id
+      const result = await query('SELECT * FROM pessoa WHERE cpfpessoa = $1', [cpfpessoa]);
 
       if (result.rows.length === 0) {
           return res.status(404).json({ error: 'Pessoa não encontrada' });
@@ -69,12 +69,12 @@ exports.obterPessoa = async (req, res) => {
 exports.atualizarPessoa = async (req, res) => {
   try {
     console.log("Todos os parâmetros atualizar:", JSON.stringify(req.params));
-      const cpfPessoa = req.params.cpfPessoa; // antes: id
+      const cpfpessoa = req.params.cpfpessoa; // antes: id
 
 
       const { nomepessoa, emailpessoa, senhapessoa, datanascimentopessoa } = req.body;
 
-      const existingPersonResult = await query('SELECT * FROM pessoa WHERE cpfPessoa = $1', [cpfPessoa]);
+      const existingPersonResult = await query('SELECT * FROM pessoa WHERE cpfpessoa = $1', [cpfpessoa]);
 
       if (existingPersonResult.rows.length === 0) {
           return res.status(404).json({ error: 'Pessoa não encontrada' });
@@ -82,15 +82,15 @@ exports.atualizarPessoa = async (req, res) => {
 
       const currentPerson = existingPersonResult.rows[0];
       const updatedFields = {
-          nomePessoa: nomePessoa ?? currentPerson.nomePessoa,
-          emailPessoa: emailPessoa ?? currentPerson.emailPessoa,
-          senhaPessoa: senhaPessoa ?? currentPerson.senhaPessoa,
-          dataNascimentoPessoa: dataNascimentoPessoa ?? currentPerson.dataNascimentoPessoa
+          nomepessoa: nomepessoa ?? currentPerson.nomepessoa,
+          emailpessoa: emailpessoa ?? currentPerson.emailpessoa,
+          senhapessoa: senhapessoa ?? currentPerson.senhapessoa,
+          datanascimentopessoa: datanascimentopessoa ?? currentPerson.datanascimentopessoa
       };
 
       const updateResult = await query(
-          'UPDATE pessoa SET nomePessoa = $1, emailPessoa = $2, senhaPessoa = $3, dataNascimentoPessoa = $4 WHERE cpfPessoa = $5 RETURNING *',
-          [updatedFields.nomePessoa, emailPessoa, senhaPessoa, dataNascimentoPessoa, cpfPessoa]
+          'UPDATE pessoa SET nomepessoa = $1, emailpessoa = $2, senhapessoa = $3, datanascimentopessoa = $4 WHERE cpfpessoa = $5 RETURNING *',
+          [updatedFields.nomepessoa, emailpessoa, senhapessoa, datanascimentopessoa, cpfpessoa]
       );
 
       res.json(updateResult.rows[0]);
@@ -105,13 +105,13 @@ exports.deletarPessoa = async (req, res) => {
   try {
       const cpf = req.params.cpf;
 
-      const existingPersonResult = await query('SELECT * FROM pessoa WHERE cpfPessoa = $1', [cpf]);
+      const existingPersonResult = await query('SELECT * FROM pessoa WHERE cpfpessoa = $1', [cpf]);
 
       if (existingPersonResult.rows.length === 0) {
           return res.status(404).json({ error: 'Pessoa não encontrada' });
       }
 
-      await query('DELETE FROM pessoa WHERE cpfPessoa = $1', [cpf]);
+      await query('DELETE FROM pessoa WHERE cpfpessoa = $1', [cpf]);
       res.status(204).send();
   } catch (error) {
       console.error('Erro ao deletar pessoa:', error);
