@@ -51,7 +51,8 @@ exports.obterPessoa = async (req, res) => {
   try {
       
    
-      const cpfpessoa = req.params.cpfpessoa; // antes: id
+      const cpfpessoa = req.params.cpf; // antes: id
+      console.log("cpfpessoa "+req.params.cpf);
       const result = await query('SELECT * FROM pessoa WHERE cpfpessoa = $1', [cpfpessoa]);
 
       if (result.rows.length === 0) {
